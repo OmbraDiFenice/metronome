@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Stefano Stoduto
  *
  * This program is free software; you can redistribute it and/or
@@ -17,12 +17,10 @@
  */
 package metronome;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.midi.MidiUnavailableException;
+import javax.swing.*;
 
 /**
- *
  * @author stefano
  */
 public class Main {
@@ -30,38 +28,19 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
+    public static void main(String[] args) {
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).throwing(Main.class.getName(), "main", ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new Interface(new Metronome()).setVisible(true);
-                } catch (MidiUnavailableException ex) {
-                    Logger.getLogger(Interface.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        java.awt.EventQueue.invokeLater(() -> {
+            try {
+                new Interface(new Metronome()).setVisible(true);
+            } catch (MidiUnavailableException ex) {
+                java.util.logging.Logger.getLogger(Interface.class.getName()).throwing(Interface.class.getName(), "constructor", ex);
             }
         });
     }

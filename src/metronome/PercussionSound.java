@@ -21,7 +21,7 @@ package metronome;
  *
  * @author stefano
  */
-public class PercussionSound {
+class PercussionSound {
 
     private final String name;
     private final int note;
@@ -33,10 +33,6 @@ public class PercussionSound {
 
     public int getNote() {
         return note;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override

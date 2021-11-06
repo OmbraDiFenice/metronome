@@ -17,7 +17,6 @@
  */
 package metronome;
 
-import java.util.Observable;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -27,40 +26,33 @@ import javax.sound.midi.MidiUnavailableException;
  *
  * @author stefano
  */
-public class Metronome extends Observable {
+public class Metronome {
 
     private long bpm;
     private PercussionSound currentSound;
     private final Player playBeat;
     private final ScheduledThreadPoolExecutor threadPool;
-    private ScheduledFuture task;
-
-    public static enum Event {
-        START, STOP, HALT, SOUND_CHANGE, BPM_CHANGE
-    }
+    private ScheduledFuture<?> task;
 
     public Metronome() throws MidiUnavailableException {
         bpm = 100;
         threadPool = new ScheduledThreadPoolExecutor(1);
         playBeat = new Player();
+        setSound(new PercussionSound("Claves", 75));
     }
 
     public void start() {
         task = threadPool.scheduleAtFixedRate(playBeat, 0, 1000 * 60 / bpm, TimeUnit.MILLISECONDS);
-        setChanged();
-        notifyObservers(Event.START);
     }
 
     public void halt() {
         threadPool.shutdown();
-        setChanged();
-        notifyObservers(Event.HALT);
     }
 
     public void stop() {
-        task.cancel(true);
-        setChanged();
-        notifyObservers(Event.STOP);
+        if(task != null) {
+            task.cancel(true);
+        }
     }
 
     public PercussionSound[] getSoundList() {
@@ -75,8 +67,6 @@ public class Metronome extends Observable {
     }
 
     public void setSound(PercussionSound sound) {
-        setChanged();
-        notifyObservers(Event.SOUND_CHANGE);
         currentSound = sound;
         playBeat.setNote(sound.getNote());
     }
@@ -86,11 +76,11 @@ public class Metronome extends Observable {
     }
 
     public void setBpm(long bpm) {
-        setChanged();
-        notifyObservers(Event.BPM_CHANGE);
         this.bpm = bpm;
-        stop();
-        start();
+        if(task != null && !task.isCancelled()) {
+            stop();
+            start();
+        }
     }
 
     public long getBpm() {

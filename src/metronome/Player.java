@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Stefano Stoduto
  *
  * This program is free software; you can redistribute it and/or
@@ -23,25 +23,27 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 
 /**
- *
  * @author stefano
  */
 class Player implements Runnable {
 
-    private MidiChannel channel;
+    private final MidiChannel channel;
     private int note;
-    private final int velocity = 127;
 
     public Player() throws MidiUnavailableException {
         final Synthesizer synthesizer = MidiSystem.getSynthesizer();
         synthesizer.open();
         channel = synthesizer.getChannels()[9];
+        if(channel == null) {
+            throw new MidiUnavailableException("No midi channel available!");
+        }
+
         note = 75;
     }
 
     @Override
     public void run() {
-        channel.noteOn(note, velocity);
+        channel.noteOn(note, 127);
         channel.noteOff(note);
     }
 

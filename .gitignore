@@ -1,1 +1,4 @@
-/nbproject/
+*.iml
+out/
+dist/
+.idea/
